@@ -1,0 +1,46 @@
+---
+- hosts: zabbix
+  remote_user: root
+  tasks:
+    - name: install zabbix-agent packages
+      yum:
+        name: zabbix-server-mysql
+        state: latest
+    - name: install zabbix packages
+      yum:
+        name: zabbix-web-mysql
+        state: latest
+    - name: install mysql packages
+      yum:
+        name: mysql-community-server
+        state: latest
+    - name: copy mysql_shell to client
+      copy:
+        src=/root/mysql.sql
+        dest=/root/mysql.sql
+    - name: copy mysql
+      copy:
+        src=/root/mysql.sh
+        dest=/root/mysql.sh
+    - name: mysql shell
+      shell: /bin/bash /root/mysql.sh
+    - name: config mysql
+      shell: "mysql< /root/mysql.sql"
+    - name: copy schema to clients
+      copy:
+        src=/root/schema.sh
+        dest=/root/schema.sh
+    - name: schema shell
+      shell: /bin/bash /root/schema.sh
+    - name: copy mysql2
+      copy:
+        src=/root/mysql2.sh
+        dest=/root/mysql2.sh
+    - name: mysql2 shell
+      shell: /bin/bash /root/mysql2.sh
+
+      shell: /bin/bash /root/schema.sh  
+    - name: copy zabbix.conf.php to client
+      copy:
+        src=/root/zabbix.conf.php
+        dest=/etc/zabbix/web/zabbix.conf.php
